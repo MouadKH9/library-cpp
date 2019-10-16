@@ -8,9 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->tabWidget->setDisabled(true);
-    loginForm = new LoginForm();
-    loginForm->show();
     setUpClientsTable();
     setUpLivresTable();
 }
@@ -55,3 +52,7 @@ void MainWindow::setUpLivresTable(){
     }
 }
 
+
+void MainWindow::on_pushButton_5_clicked(){
+    ui->stackedWidget->setCurrentIndex(0);
+}
