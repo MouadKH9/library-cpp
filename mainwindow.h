@@ -22,6 +22,12 @@ public:
 private slots:
     void on_pushButton_5_clicked();
 
+    void on_pushButton_16_clicked();
+
+    void on_clientPrenom_textChanged(const QString &arg1);
+
+    void on_clientNom_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *clientModel;

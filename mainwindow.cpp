@@ -56,3 +56,25 @@ void MainWindow::setUpLivresTable(){
 void MainWindow::on_pushButton_5_clicked(){
     ui->stackedWidget->setCurrentIndex(0);
 }
+
+void MainWindow::on_pushButton_16_clicked(){
+    QList<QStandardItem *> items;
+
+    items.append(new QStandardItem("1"));
+    items.append(new QStandardItem(ui->clientPrenom->text().toUtf8().data()));
+    items.append(new QStandardItem(ui->clientNom->text().toUtf8().data()));
+    items.append(new QStandardItem("0"));
+    clientModel->appendRow(items);
+
+    ui->clientPrenom->setText("");
+    ui->clientNom->setText("");
+}
+
+void MainWindow::on_clientPrenom_textChanged(const QString &arg1){
+    ui->pushButton_16->setEnabled(ui->clientPrenom->text().length() > 0 && ui->clientNom->text().length() > 0);
+}
+
+void MainWindow::on_clientNom_textChanged(const QString &arg1)
+{
+    ui->pushButton_16->setEnabled(ui->clientPrenom->text().length() > 0 && ui->clientNom->text().length() > 0);
+}
