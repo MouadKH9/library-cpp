@@ -1,7 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <string>
+#include <QMessageBox>
 
+
+#include "admin.h"
+#include "admintransaction.h"
+#include "client.h"
+#include "clienttransaction.h"
 using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -25,12 +31,29 @@ void MainWindow::setUpClientsTable(){
     clientModel->setHeaderData(1,Qt::Orientation::Horizontal,"Prenom",Qt::DisplayRole);
     clientModel->setHeaderData(2,Qt::Orientation::Horizontal,"Nom",Qt::DisplayRole);
     clientModel->setHeaderData(3,Qt::Orientation::Horizontal,"Status",Qt::DisplayRole);
+    ClientTransaction ct;
+    QVector<Client> clients = ct.getClients();
     // Generate data
-    for(int row = 0; row < 4; row++){
-        clientModel->setData(clientModel->index(row,0,QModelIndex()),row);
-        clientModel->setData(clientModel->index(row,1,QModelIndex()),"Mouad");
-        clientModel->setData(clientModel->index(row,2,QModelIndex()),"Khchich");
-        clientModel->setData(clientModel->index(row,3,QModelIndex()),0);
+    Client tmp;
+    for(int row = 0; row < clients.length(); row++){
+        tmp = clients.at(row);
+        qDebug() << tmp.getId();
+        clientModel->setData(
+                    clientModel->index(row,0,QModelIndex()),
+                    tmp.getId()
+                    );
+        clientModel->setData(
+                    clientModel->index(row,1,QModelIndex()),
+                    tmp.getPrenom()
+                    );
+        clientModel->setData(
+                    clientModel->index(row,2,QModelIndex()),
+                    tmp.getNom()
+                    );
+        clientModel->setData(
+                    clientModel->index(row,3,QModelIndex()),
+                    tmp.getEtat()
+                    );
     }
 }
 
@@ -54,7 +77,18 @@ void MainWindow::setUpLivresTable(){
 
 
 void MainWindow::on_pushButton_5_clicked(){
-    ui->stackedWidget->setCurrentIndex(0);
+    QString username = ui->lineEdit->text().toUtf8();
+    QString password = ui->lineEdit_2->text().toUtf8();
+    Admin admin(username,password);
+    AdminTransaction at;
+    if(at.Login(admin))
+        ui->stackedWidget->setCurrentIndex(0);
+    else{
+        QMessageBox *msgBox = new QMessageBox(this);
+        msgBox->warning(this,"Erreur","Les informations d'identification sont invalides.");
+
+    }
+
 }
 
 void MainWindow::on_pushButton_16_clicked(){
@@ -77,4 +111,9 @@ void MainWindow::on_clientPrenom_textChanged(const QString &arg1){
 void MainWindow::on_clientNom_textChanged(const QString &arg1)
 {
     ui->pushButton_16->setEnabled(ui->clientPrenom->text().length() > 0 && ui->clientNom->text().length() > 0);
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    QApplication::exit();
 }
