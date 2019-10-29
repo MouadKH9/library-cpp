@@ -36,6 +36,12 @@ private slots:
 
     void on_pushButton_8_clicked();
 
+    void on_pushButton_19_clicked();
+
+    void on_pushButton_21_clicked();
+
+    void on_pushButton_20_clicked();
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *clientModel;
@@ -46,6 +52,8 @@ private:
     void deleteClients();
     void blockClients();
     void setUpLivresTable();
+    void addLivre();
+    void deleteLivres();
     void setUpReservationsTable();
 };
 #endif // MAINWINDOW_H

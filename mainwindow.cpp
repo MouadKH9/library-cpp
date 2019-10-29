@@ -8,6 +8,8 @@
 #include "admintransaction.h"
 #include "client.h"
 #include "clienttransaction.h"
+#include "livre.h"
+#include "livretransaction.h"
 using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -67,10 +69,18 @@ void MainWindow::deleteClients(){
 
     ClientTransaction ct;
     QModelIndexList ids = select->selection().indexes();
+    bool skipMe = false;
     for(int i = 0;i < ids.length();i++){
-        qDebug() << "Deleting: " <<  ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt();
-        ct.deleteClient(ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt());
-    }
+        for(int j=0;j<i;j++)
+            if(ids.at(j).row() == ids.at(i).row()){
+                skipMe = true;
+                break;
+            }
+        if(!skipMe){
+            qDebug() << "Deleting: " <<  ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt();
+            ct.deleteClient(ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt());
+        }
+   }
 
 }
 
@@ -100,7 +110,13 @@ void MainWindow::blockClients(){
 }
 
 void MainWindow::setUpLivresTable(){
-    livreModel = new QStandardItemModel(4,4,this);
+
+    LivreTransaction lt;
+    QVector<Livre> livres = lt.getLivres();
+    Livre tmp;
+
+
+    livreModel = new QStandardItemModel(livres.length(),4,this);
     ui->livresTable->setModel(livreModel);
     ui->livresTable->verticalHeader()->hide();
     ui->livresTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -115,6 +131,43 @@ void MainWindow::setUpLivresTable(){
         livreModel->setData(livreModel->index(row,2,QModelIndex()),"Mouad");
         livreModel->setData(livreModel->index(row,3,QModelIndex()),true);
     }
+}
+
+void MainWindow::addLivre(){
+    QString title = ui->bookTitle->text();
+    QString author = ui->bookAuthor->text();
+
+    LivreTransaction lt;
+    Livre livre(title,author);
+    lt.addLivre(livre);
+    setUpLivresTable();
+}
+
+void MainWindow::deleteLivres(){
+
+    QItemSelectionModel *select = ui->livresTable->selectionModel();
+    if(!select->hasSelection()){
+        qDebug() << "No selection";
+        return;
+    }
+
+    LivreTransaction lt;
+    QModelIndexList ids = select->selectedIndexes();
+    qDebug() << "size: " << ids.length();
+    bool skipMe = false;
+    for(int i = 0;i < ids.length();i++){
+        for(int j=0;j<i;j++)
+            if(ids.at(j).row() == ids.at(i).row()){
+                skipMe = true;
+                break;
+            }
+        if(!skipMe){
+            qDebug() << "Deleting: " <<  ui->livresTable->model()->data(livreModel->index(ids.at(i).row(),0)).toInt();
+            lt.deleteLivre(ui->livresTable->model()->data(livreModel->index(ids.at(i).row(),0)).toInt());
+        }
+        skipMe = false;
+    }
+
 }
 
 
@@ -164,4 +217,19 @@ void MainWindow::on_pushButton_6_clicked()
 void MainWindow::on_pushButton_8_clicked()
 {
     blockClients();
+}
+
+void MainWindow::on_pushButton_19_clicked()
+{
+    addLivre();
+}
+
+void MainWindow::on_pushButton_21_clicked()
+{
+    setUpLivresTable();
+}
+
+void MainWindow::on_pushButton_20_clicked()
+{
+    deleteLivres();
 }
