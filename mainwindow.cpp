@@ -23,7 +23,12 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::setUpClientsTable(){
-    clientModel = new QStandardItemModel(4,4,this);
+
+    ClientTransaction ct;
+    QVector<Client> clients = ct.getClients();
+    Client tmp;
+
+    clientModel = new QStandardItemModel(clients.length(),4,this);
     ui->clientsTable->setModel(clientModel);
     ui->clientsTable->verticalHeader()->hide();
     ui->clientsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -31,13 +36,9 @@ void MainWindow::setUpClientsTable(){
     clientModel->setHeaderData(1,Qt::Orientation::Horizontal,"Prenom",Qt::DisplayRole);
     clientModel->setHeaderData(2,Qt::Orientation::Horizontal,"Nom",Qt::DisplayRole);
     clientModel->setHeaderData(3,Qt::Orientation::Horizontal,"Status",Qt::DisplayRole);
-    ClientTransaction ct;
-    QVector<Client> clients = ct.getClients();
-    // Generate data
-    Client tmp;
     for(int row = 0; row < clients.length(); row++){
         tmp = clients.at(row);
-        qDebug() << tmp.getId();
+        qDebug() << "Adding " << tmp.getPrenom() << " " << tmp.getNom();
         clientModel->setData(
                     clientModel->index(row,0,QModelIndex()),
                     tmp.getId()
@@ -54,6 +55,47 @@ void MainWindow::setUpClientsTable(){
                     clientModel->index(row,3,QModelIndex()),
                     tmp.getEtat()
                     );
+    }
+}
+void MainWindow::deleteClients(){
+
+    QItemSelectionModel *select = ui->clientsTable->selectionModel();
+    if(!select->hasSelection()){
+        qDebug() << "No selection";
+        return;
+    }
+
+    ClientTransaction ct;
+    QModelIndexList ids = select->selection().indexes();
+    for(int i = 0;i < ids.length();i++){
+        qDebug() << "Deleting: " <<  ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt();
+        ct.deleteClient(ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt());
+    }
+
+}
+
+void MainWindow::addClient(){
+    QString fName = ui->clientPrenom->text();
+    QString lName = ui->clientNom->text();
+
+    ClientTransaction ct;
+    Client client(fName,lName,0);
+    ct.addClient(client);
+    setUpClientsTable();
+}
+
+void MainWindow::blockClients(){
+    QItemSelectionModel *select = ui->clientsTable->selectionModel();
+    if(!select->hasSelection()){
+        qDebug() << "No selection";
+        return;
+    }
+
+    ClientTransaction ct;
+    QModelIndexList ids = select->selection().indexes();
+    for(int i = 0;i < ids.length();i++){
+        qDebug() << "Blocking: " <<  ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt();
+        ct.blockClient(ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt());
     }
 }
 
@@ -92,16 +134,7 @@ void MainWindow::on_pushButton_5_clicked(){
 }
 
 void MainWindow::on_pushButton_16_clicked(){
-    QList<QStandardItem *> items;
-
-    items.append(new QStandardItem("1"));
-    items.append(new QStandardItem(ui->clientPrenom->text().toUtf8().data()));
-    items.append(new QStandardItem(ui->clientNom->text().toUtf8().data()));
-    items.append(new QStandardItem("0"));
-    clientModel->appendRow(items);
-
-    ui->clientPrenom->setText("");
-    ui->clientNom->setText("");
+    addClient();
 }
 
 void MainWindow::on_clientPrenom_textChanged(const QString &arg1){
@@ -116,4 +149,19 @@ void MainWindow::on_clientNom_textChanged(const QString &arg1)
 void MainWindow::on_pushButton_4_clicked()
 {
     QApplication::exit();
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    setUpClientsTable();
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    deleteClients();
+}
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    blockClients();
 }
