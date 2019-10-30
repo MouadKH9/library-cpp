@@ -223,9 +223,65 @@ void MainWindow::setUpReservationsTable(){
                     );
         reservationModel->setData(
                     reservationModel->index(row,5,QModelIndex()),
-                    0
+                    tmp.getReturned()
                     );
+        qDebug() << "Added " << tmp.getDebut() << " " << tmp.getFin() << " " << tmp.getId() << " " << tmp.getIdLivre();
     }
+}
+
+void MainWindow::deleteReservation(){
+    QItemSelectionModel *select = ui->reservationsTable->selectionModel();
+    if(!select->hasSelection()){
+        qDebug() << "No selection";
+        return;
+    }
+
+    ReservationTransaction rt;
+    QModelIndexList ids = select->selectedIndexes();
+    qDebug() << "size: " << ids.length();
+    bool skipMe = false;
+    for(int i = 0;i < ids.length();i++){
+        for(int j=0;j<i;j++)
+            if(ids.at(j).row() == ids.at(i).row()){
+                skipMe = true;
+                break;
+            }
+        if(!skipMe){
+            qDebug() << "Deleting: " <<  ui->reservationsTable->model()->data(livreModel->index(ids.at(i).row(),0)).toInt();
+            rt.deleteReservation(ui->reservationsTable->model()->data(reservationModel->index(ids.at(i).row(),0)).toInt());
+        }
+        skipMe = false;
+    }
+    setUpReservationsTable();
+}
+
+void MainWindow::returnReservation(){
+    QItemSelectionModel *select = ui->reservationsTable->selectionModel();
+    if(!select->hasSelection()){
+        qDebug() << "No selection";
+        return;
+    }
+
+    ReservationTransaction rt;
+    QModelIndexList ids = select->selectedIndexes();
+    qDebug() << "size: " << ids.length();
+    bool skipMe = false;
+    Reservation tmp;
+    for(int i = 0;i < ids.length();i++){
+        for(int j=0;j<i;j++)
+            if(ids.at(j).row() == ids.at(i).row()){
+                skipMe = true;
+                break;
+            }
+        if(!skipMe){
+            qDebug() << "Returning: " <<  ui->reservationsTable->model()->data(livreModel->index(ids.at(i).row(),0)).toInt();
+            tmp = rt.getReservation(ui->reservationsTable->model()->data(reservationModel->index(ids.at(i).row(),0)).toInt());
+            tmp.setReturned(1);
+            rt.updateReservation(tmp.getId(),tmp);
+        }
+        skipMe = false;
+    }
+    setUpReservationsTable();
 }
 
 void MainWindow::addReservation(){
@@ -329,4 +385,14 @@ void MainWindow::on_bookAuthor_textChanged(const QString &arg1)
 void MainWindow::on_pushButton_clicked()
 {
     addReservation();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    deleteReservation();
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    returnReservation();
 }

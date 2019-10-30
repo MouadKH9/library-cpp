@@ -48,16 +48,16 @@ void ReservationTransaction ::deleteReservation(int id) {
 
 }
 void ReservationTransaction ::updateReservation(int id, Reservation r) {
-    connection();
-      QSqlQuery qr ;
-      qr.prepare("UPDATE Reservation SET Start=?, End =? , Id_client =? , Id_book=? WHERE Id="+QString::number(id));
-      qr.addBindValue(r.getDebut());
-      qr.addBindValue(r.getFin());
-      qr.addBindValue(r.getIdClient());
-      qr.addBindValue(r.getIdLivre());
-      if(! qr.exec()){
-          qDebug()<<"error in edding values";
-      }
+        connection();
+        QSqlQuery qr ;
+        qr.prepare("UPDATE Reservation SET Start=?, End =? , Id_client =? , Id_book=? , returned=? WHERE Id="+QString::number(id));
+        qr.addBindValue(r.getDebut());
+        qr.addBindValue(r.getFin());
+        qr.addBindValue(r.getIdClient());
+        qr.addBindValue(r.getIdLivre());
+        qr.addBindValue(r.getReturned());
+        if(! qr.exec())
+            qDebug()<<"error in edding values";
 }
 
 
@@ -91,12 +91,13 @@ Reservation ReservationTransaction :: getReservation(int id){
         qDebug()<<"error in displaying one value";
   }
   while(qr.next()){
+      int id = qr.value(0).toInt();
       QString Start = qr.value(1).toString();
       QString End = qr.value(2).toString();
       int id_client = qr.value(3).toInt();
       int id_book = qr.value(4).toInt();
 
-      r = new Reservation(Start,End,id_client,id_book);
+      r = new Reservation(id,Start,End,id_client,id_book);
   }
   return *r;
 }

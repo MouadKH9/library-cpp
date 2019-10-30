@@ -81,7 +81,8 @@ QVector<Client> ClientTransaction ::getClients(){
         QString First = qr.value(1).toString();
         QString Last = qr.value(2).toString();
         int Stat = qr.value(3).toInt();
-        Client c(First,Last,Stat);
+        int id = qr.value(0).toInt();
+        Client c(id,First,Last,Stat);
         list.push_back(c);
     }
     return list;
