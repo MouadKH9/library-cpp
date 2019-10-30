@@ -239,6 +239,9 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_19">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                   <horstretch>0</horstretch>

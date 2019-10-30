@@ -42,6 +42,10 @@ private slots:
 
     void on_pushButton_20_clicked();
 
+    void on_bookTitle_textChanged(const QString &arg1);
+
+    void on_bookAuthor_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *clientModel;

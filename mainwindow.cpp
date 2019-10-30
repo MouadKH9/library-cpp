@@ -116,20 +116,30 @@ void MainWindow::setUpLivresTable(){
     Livre tmp;
 
 
-    livreModel = new QStandardItemModel(livres.length(),4,this);
+    livreModel = new QStandardItemModel(livres.length(),3,this);
     ui->livresTable->setModel(livreModel);
     ui->livresTable->verticalHeader()->hide();
     ui->livresTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     livreModel->setHeaderData(0,Qt::Orientation::Horizontal,"ID",Qt::DisplayRole);
     livreModel->setHeaderData(1,Qt::Orientation::Horizontal,"Titre",Qt::DisplayRole);
     livreModel->setHeaderData(2,Qt::Orientation::Horizontal,"Auteur",Qt::DisplayRole);
-    livreModel->setHeaderData(3,Qt::Orientation::Horizontal,"Disponible",Qt::DisplayRole);
+//    livreModel->setHeaderData(3,Qt::Orientation::Horizontal,"Disponible",Qt::DisplayRole);
     // Generate data
-    for(int row = 0; row < 4; row++){
-        livreModel->setData(livreModel->index(row,0,QModelIndex()),row + 1);
-        livreModel->setData(livreModel->index(row,1,QModelIndex()), "Livre");
-        livreModel->setData(livreModel->index(row,2,QModelIndex()),"Mouad");
-        livreModel->setData(livreModel->index(row,3,QModelIndex()),true);
+    for(int row = 0; row < livres.length(); row++){
+        tmp = livres.at(row);
+        qDebug() << "Adding " << tmp.getNom() << " " << tmp.getAuteur();
+        livreModel->setData(
+                    livreModel->index(row,0,QModelIndex()),
+                    tmp.getId()
+                    );
+        livreModel->setData(
+                    livreModel->index(row,1,QModelIndex()),
+                    tmp.getNom()
+                    );
+        livreModel->setData(
+                    livreModel->index(row,2,QModelIndex()),
+                    tmp.getAuteur()
+                    );
     }
 }
 
@@ -167,7 +177,7 @@ void MainWindow::deleteLivres(){
         }
         skipMe = false;
     }
-
+    setUpLivresTable();
 }
 
 
@@ -232,4 +242,14 @@ void MainWindow::on_pushButton_21_clicked()
 void MainWindow::on_pushButton_20_clicked()
 {
     deleteLivres();
+}
+
+void MainWindow::on_bookTitle_textChanged(const QString &arg1)
+{
+    ui->pushButton_19->setEnabled(ui->bookTitle->text().length() > 0 && ui->bookAuthor->text().length() > 0);
+}
+
+void MainWindow::on_bookAuthor_textChanged(const QString &arg1)
+{
+    ui->pushButton_19->setEnabled(ui->bookTitle->text().length() > 0 && ui->bookAuthor->text().length() > 0);
 }

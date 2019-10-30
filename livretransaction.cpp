@@ -62,10 +62,12 @@ QVector<Livre> LivreTransaction ::getLivres(){
           qDebug()<<"error in displaying values";
     }
     while(qr.next()){
+        int id = qr.value(0).toInt();
         QString Name = qr.value(1).toString();
         QString Authur = qr.value(2).toString();
-        Livre l(Name,Authur);
+        Livre l(id,Name,Authur);
         list.push_back(l);
+        qDebug()<<"Fetched: " << id << " " << Name;
     }
     return list;
 
