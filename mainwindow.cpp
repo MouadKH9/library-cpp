@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include <string>
 #include <QMessageBox>
-
+#include<ctime>
 
 #include "admin.h"
 #include "admintransaction.h"
@@ -10,6 +10,8 @@
 #include "clienttransaction.h"
 #include "livre.h"
 #include "livretransaction.h"
+#include "reservationtransaction.h"
+#include "reservation.h"
 using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setUpClientsTable();
     setUpLivresTable();
+    setUpReservationsTable();
 }
 
 MainWindow::~MainWindow(){
@@ -180,6 +183,75 @@ void MainWindow::deleteLivres(){
     setUpLivresTable();
 }
 
+void MainWindow::setUpReservationsTable(){
+    ReservationTransaction rt;
+    QVector<Reservation> reservations = rt.getReservations();
+    Reservation tmp;
+
+    reservationModel = new QStandardItemModel(reservations.length(),6,this);
+    ui->reservationsTable->setModel(reservationModel);
+    ui->reservationsTable->verticalHeader()->hide();
+    ui->reservationsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    reservationModel->setHeaderData(0,Qt::Orientation::Horizontal,"ID",Qt::DisplayRole);
+    reservationModel->setHeaderData(1,Qt::Orientation::Horizontal,"ID Livre",Qt::DisplayRole);
+    reservationModel->setHeaderData(2,Qt::Orientation::Horizontal,"ID Client",Qt::DisplayRole);
+    reservationModel->setHeaderData(3,Qt::Orientation::Horizontal,"Debut",Qt::DisplayRole);
+    reservationModel->setHeaderData(4,Qt::Orientation::Horizontal,"Fin",Qt::DisplayRole);
+    reservationModel->setHeaderData(5,Qt::Orientation::Horizontal,"Retourne",Qt::DisplayRole);
+    for(int row = 0; row < reservations.length(); row++){
+        tmp = reservations.at(row);
+        qDebug() << "Adding " << tmp.getDebut() << " " << tmp.getFin() << " " << tmp.getId() << " " << tmp.getIdLivre();
+        reservationModel->setData(
+                    reservationModel->index(row,0,QModelIndex()),
+                    tmp.getId()
+                    );
+        reservationModel->setData(
+                    reservationModel->index(row,1,QModelIndex()),
+                    tmp.getIdLivre()
+                    );
+        reservationModel->setData(
+                    reservationModel->index(row,2,QModelIndex()),
+                    tmp.getIdClient()
+                    );
+        reservationModel->setData(
+                    reservationModel->index(row,3,QModelIndex()),
+                    tmp.getDebut()
+                    );
+        reservationModel->setData(
+                    reservationModel->index(row,4,QModelIndex()),
+                    tmp.getFin()
+                    );
+        reservationModel->setData(
+                    reservationModel->index(row,5,QModelIndex()),
+                    0
+                    );
+    }
+}
+
+void MainWindow::addReservation(){
+    int client = ui->clientID->text().toInt();
+    int livre = ui->bookID->text().toInt();
+
+    // Declaring argument for time()
+        time_t tt;
+
+        // Declaring variable to store return value of
+        // localtime()
+        struct tm * ti;
+
+        // Applying time()
+        time (&tt);
+
+        // Using localtime()
+        ti = localtime(&tt);
+    string today = to_string(ti->tm_mday) + '-' + to_string(ti->tm_mon + 1) + '-' + to_string(1900 + ti->tm_year);
+    string returnDate = to_string(ti->tm_mday) + '-' + to_string(ti->tm_mon + 1) + '-' + to_string(1900 + ti->tm_year);
+    ReservationTransaction rt;
+    Reservation r(QString::fromStdString(today),QString::fromStdString(returnDate),client,livre);
+    rt.addReservation(r);
+    setUpReservationsTable();
+
+}
 
 void MainWindow::on_pushButton_5_clicked(){
     QString username = ui->lineEdit->text().toUtf8();
@@ -252,4 +324,9 @@ void MainWindow::on_bookTitle_textChanged(const QString &arg1)
 void MainWindow::on_bookAuthor_textChanged(const QString &arg1)
 {
     ui->pushButton_19->setEnabled(ui->bookTitle->text().length() > 0 && ui->bookAuthor->text().length() > 0);
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    addReservation();
 }

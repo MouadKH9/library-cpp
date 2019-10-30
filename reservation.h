@@ -12,9 +12,11 @@ class Reservation
     QString fin;
     int idClient;
     int idLivre;
+    int returned;
 public:
     Reservation();
     Reservation(int,QString,QString,int,int);
+    Reservation(int,QString,QString,int,int,int);
     Reservation(QString,QString,int,int);
     int getId();
     QString getDebut();
@@ -26,6 +28,8 @@ public:
     void setFin(QString);
     void setIdClient(int);
     void setIdLivre(int);
+    void setReturned(int);
+    int getReturned();
 };
 
 #endif // RESERVATION_H

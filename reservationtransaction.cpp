@@ -20,7 +20,7 @@ void ReservationTransaction ::addReservation(Reservation r){
     qr1.prepare("INSERT INTO Reservation ("
                "Start,"
                "End,"
-                "Id_client,"
+               "Id_client,"
                "Id_book)"
                "VALUES (?,?,?,?);"
                 );
@@ -33,6 +33,8 @@ void ReservationTransaction ::addReservation(Reservation r){
     if(! qr1.exec()){
         qDebug()<<"error in adding values";
         qDebug()<<"ERROR! "<< qr1.lastError();
+    }else{
+        qDebug() << "Inserting reservation: " << r.getIdClient() << " " << r.getIdLivre();
     }
 }
 
@@ -71,8 +73,10 @@ QVector<Reservation> ReservationTransaction ::getReservations(){
         QString Start = qr.value(1).toString();
         QString End = qr.value(2).toString();
         int id_client = qr.value(3).toInt();
-        int id_book = qr.value(4).toInt();
-        Reservation r(Start,End,id_client,id_book);
+        int id_book = qr.value(5).toInt();
+        int id = qr.value(0).toInt();
+        int returned = qr.value(4).toInt();
+        Reservation r(id,Start,End,id_client,id_book,returned);
         list.push_back(r);
     }
     return list;

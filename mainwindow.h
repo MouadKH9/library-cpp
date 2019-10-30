@@ -46,6 +46,8 @@ private slots:
 
     void on_bookAuthor_textChanged(const QString &arg1);
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *clientModel;
@@ -59,5 +61,7 @@ private:
     void addLivre();
     void deleteLivres();
     void setUpReservationsTable();
+    void addReservation();
+    void deleteReservation();
 };
 #endif // MAINWINDOW_H
