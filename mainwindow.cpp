@@ -95,6 +95,8 @@ void MainWindow::addClient(){
     Client client(fName,lName,0);
     ct.addClient(client);
     setUpClientsTable();
+    ui->clientPrenom->setText("");
+    ui->clientNom->setText("");
 }
 
 void MainWindow::blockClients(){
@@ -154,6 +156,9 @@ void MainWindow::addLivre(){
     Livre livre(title,author);
     lt.addLivre(livre);
     setUpLivresTable();
+
+    ui->bookTitle->setText("");
+    ui->bookAuthor->setText("");
 }
 
 void MainWindow::deleteLivres(){
@@ -188,7 +193,7 @@ void MainWindow::setUpReservationsTable(){
     QVector<Reservation> reservations = rt.getReservations();
     Reservation tmp;
 
-    reservationModel = new QStandardItemModel(reservations.length(),6,this);
+    reservationModel = new QStandardItemModel(reservations.length(),5,this);
     ui->reservationsTable->setModel(reservationModel);
     ui->reservationsTable->verticalHeader()->hide();
     ui->reservationsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -196,11 +201,10 @@ void MainWindow::setUpReservationsTable(){
     reservationModel->setHeaderData(1,Qt::Orientation::Horizontal,"ID Livre",Qt::DisplayRole);
     reservationModel->setHeaderData(2,Qt::Orientation::Horizontal,"ID Client",Qt::DisplayRole);
     reservationModel->setHeaderData(3,Qt::Orientation::Horizontal,"Debut",Qt::DisplayRole);
-    reservationModel->setHeaderData(4,Qt::Orientation::Horizontal,"Fin",Qt::DisplayRole);
-    reservationModel->setHeaderData(5,Qt::Orientation::Horizontal,"Retourne",Qt::DisplayRole);
+    reservationModel->setHeaderData(4,Qt::Orientation::Horizontal,"Retourne",Qt::DisplayRole);
     for(int row = 0; row < reservations.length(); row++){
         tmp = reservations.at(row);
-        qDebug() << "Adding " << tmp.getDebut() << " " << tmp.getFin() << " " << tmp.getId() << " " << tmp.getIdLivre();
+        qDebug() << "Adding " << tmp.getDebut() << " " << tmp.getId() << " " << tmp.getIdLivre();
         reservationModel->setData(
                     reservationModel->index(row,0,QModelIndex()),
                     tmp.getId()
@@ -219,13 +223,9 @@ void MainWindow::setUpReservationsTable(){
                     );
         reservationModel->setData(
                     reservationModel->index(row,4,QModelIndex()),
-                    tmp.getFin()
-                    );
-        reservationModel->setData(
-                    reservationModel->index(row,5,QModelIndex()),
                     tmp.getReturned()
                     );
-        qDebug() << "Added " << tmp.getDebut() << " " << tmp.getFin() << " " << tmp.getId() << " " << tmp.getIdLivre();
+        qDebug() << "Added " << tmp.getDebut()  << " " << tmp.getId() << " " << tmp.getIdLivre();
     }
 }
 
@@ -288,25 +288,33 @@ void MainWindow::addReservation(){
     int client = ui->clientID->text().toInt();
     int livre = ui->bookID->text().toInt();
 
-    // Declaring argument for time()
-        time_t tt;
+    LivreTransaction lt;
+    ClientTransaction ct;
 
-        // Declaring variable to store return value of
-        // localtime()
-        struct tm * ti;
+    if(!lt.livreExists(livre) || !ct.clientExists(client)){
+        QMessageBox *msgBox = new QMessageBox(this);
+        msgBox->warning(this,"Erreur","Impossible de trouver le client ou le livre..");
+        return;
+    }
 
-        // Applying time()
-        time (&tt);
 
-        // Using localtime()
-        ti = localtime(&tt);
-    string today = to_string(ti->tm_mday) + '-' + to_string(ti->tm_mon + 1) + '-' + to_string(1900 + ti->tm_year);
+    time_t tt;
+    struct tm * ti;
+
+    time (&tt);
+
+    ti = localtime(&tt);
+    int day = ti->tm_mday;
+    int month = ti->tm_mon + 1;
+    int year = 1900 + ti->tm_year;
+    string today = to_string(day) + '-' + to_string(month) + '-' + to_string(year);
     string returnDate = to_string(ti->tm_mday) + '-' + to_string(ti->tm_mon + 1) + '-' + to_string(1900 + ti->tm_year);
     ReservationTransaction rt;
-    Reservation r(QString::fromStdString(today),QString::fromStdString(returnDate),client,livre);
+    Reservation r(QString::fromStdString(today),client,livre);
     rt.addReservation(r);
     setUpReservationsTable();
-
+    ui->bookID->setText("");
+    ui->clientID->setText("");
 }
 
 void MainWindow::on_pushButton_5_clicked(){
@@ -395,4 +403,14 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_pushButton_9_clicked()
 {
     returnReservation();
+}
+
+void MainWindow::on_clientID_textChanged(const QString &arg1)
+{
+    ui->pushButton->setEnabled(ui->bookID->text().length() > 0 && ui->clientID->text().length() > 0);
+}
+
+void MainWindow::on_bookID_textChanged(const QString &arg1)
+{
+    ui->pushButton->setEnabled(ui->bookID->text().length() > 0 && ui->clientID->text().length() > 0);
 }

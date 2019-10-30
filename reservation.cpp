@@ -1,27 +1,24 @@
 #include "reservation.h"
 Reservation::Reservation(){}
 
-Reservation::Reservation(int id , QString debut , QString fin , int idClient , int idLivre)
+Reservation::Reservation(int id , QString debut , int idClient , int idLivre)
 {
     this->id=id;
     this->debut=debut;
-    this->fin=fin;
     this->idClient=idClient;
     this->idLivre=idLivre;
 }
-Reservation::Reservation(int id , QString debut , QString fin , int idClient , int idLivre,int returned)
+Reservation::Reservation(int id , QString debut , int idClient , int idLivre,int returned)
 {
     this->id=id;
     this->debut=debut;
-    this->fin=fin;
     this->idClient=idClient;
     this->idLivre=idLivre;
     this->returned=returned;
 }
-Reservation::Reservation(QString debut , QString fin , int idClient , int idLivre)
+Reservation::Reservation(QString debut  , int idClient , int idLivre)
 {
     this->debut=debut;
-    this->fin=fin;
     this->idClient=idClient;
     this->idLivre=idLivre;
 }
@@ -30,9 +27,6 @@ int Reservation::getId(){
 }
 QString Reservation :: getDebut(){
     return this->debut;
-}
-QString Reservation:: getFin(){
-    return this->fin;
 }
 int Reservation::getIdLivre(){
     return this->idLivre;
@@ -45,9 +39,6 @@ void Reservation::setId(int id ){
 }
 void Reservation::setDebut(QString debut){
     this->debut=debut;
-}
-void Reservation::setFin(QString fin){
-    this->fin=fin;
 }
 void Reservation::setIdClient(int idClient){
     this->idClient=idClient;

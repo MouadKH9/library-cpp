@@ -109,4 +109,17 @@ Client ClientTransaction :: getClient(int id){
  return *c;
 }
 
+bool ClientTransaction::clientExists(int id){
+    connection();
+    QSqlQuery qr;
+    qr.prepare("SELECT * FROM Client WHERE Id="+QString::number(id));
+    if(!qr.exec()){
+          qDebug()<<"error in displaying one value";
+    }
+    while(qr.next()){
+        return true;
+    }
+   return false;
+}
+
 

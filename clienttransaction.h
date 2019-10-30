@@ -14,6 +14,7 @@ public:
    void blockClient(int);
    QVector<Client> getClients();
    Client getClient(int);
+   bool clientExists(int);
 
 };
 

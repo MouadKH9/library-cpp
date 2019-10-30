@@ -89,3 +89,16 @@ Livre LivreTransaction :: getLivre(int id){
   return *l;
 
 }
+
+bool LivreTransaction::livreExists(int id){
+    connection();
+    QSqlQuery qr;
+    qr.prepare("SELECT * FROM Book WHERE Id="+QString::number(id));
+    if(!qr.exec()){
+          qDebug()<<"error in displaying one value";
+    }
+    while(qr.next()){
+        return true;
+    }
+   return false;
+}

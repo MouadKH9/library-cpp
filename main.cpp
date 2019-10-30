@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 //    QString query3 = "CREATE TABLE Client ("
 //                    "Id integer PRIMARY KEY AUTOINCREMENT ," "First VARCHAR(20)," "Last VARCHAR(20)," "Stat integer);";
 //    QString query4 = "CREATE TABLE Reservation ("
-//                    "Id integer PRIMARY KEY AUTOINCREMENT ," "Start DATETIME," "End DATETIME," "Id_client integer," "returned integer default 0," " Id_book integer);";
+//                    "Id integer PRIMARY KEY AUTOINCREMENT ," "Start DATETIME," "Id_client integer," "returned integer default 0," " Id_book integer);";
 //    QSqlQuery qry;
 
 //    if(! qry.exec(query1)){

@@ -13,6 +13,7 @@ public:
     void updateLivre(int ,Livre);
     QVector<Livre> getLivres();
     Livre getLivre(int);
+    bool livreExists(int);
 };
 
 #endif // LIVRETRANSACTION_H

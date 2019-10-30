@@ -19,14 +19,12 @@ void ReservationTransaction ::addReservation(Reservation r){
     QSqlQuery qr1 ;
     qr1.prepare("INSERT INTO Reservation ("
                "Start,"
-               "End,"
                "Id_client,"
                "Id_book)"
-               "VALUES (?,?,?,?);"
+               "VALUES (?,?,?);"
                 );
 
     qr1.addBindValue(r.getDebut());
-    qr1.addBindValue(r.getFin());
     qr1.addBindValue(r.getIdClient());
     qr1.addBindValue(r.getIdLivre());
 
@@ -50,14 +48,15 @@ void ReservationTransaction ::deleteReservation(int id) {
 void ReservationTransaction ::updateReservation(int id, Reservation r) {
         connection();
         QSqlQuery qr ;
-        qr.prepare("UPDATE Reservation SET Start=?, End =? , Id_client =? , Id_book=? , returned=? WHERE Id="+QString::number(id));
+        qr.prepare("UPDATE Reservation SET Start=? , Id_client =? , Id_book=? , returned=? WHERE Id="+QString::number(id));
         qr.addBindValue(r.getDebut());
-        qr.addBindValue(r.getFin());
         qr.addBindValue(r.getIdClient());
         qr.addBindValue(r.getIdLivre());
         qr.addBindValue(r.getReturned());
         if(! qr.exec())
             qDebug()<<"error in edding values";
+        else
+            qDebug() << "Udated #"<< id<< " " << r.getIdLivre();
 }
 
 
@@ -70,13 +69,12 @@ QVector<Reservation> ReservationTransaction ::getReservations(){
           qDebug()<<"error in displaying values";
     }
     while(qr.next()){
-        QString Start = qr.value(1).toString();
-        QString End = qr.value(2).toString();
-        int id_client = qr.value(3).toInt();
-        int id_book = qr.value(5).toInt();
         int id = qr.value(0).toInt();
-        int returned = qr.value(4).toInt();
-        Reservation r(id,Start,End,id_client,id_book,returned);
+        QString Start = qr.value(1).toString();
+        int id_client = qr.value(2).toInt();
+        int id_book = qr.value(4).toInt();
+        int returned = qr.value(3).toInt();
+        Reservation r(id,Start,id_client,id_book,returned);
         list.push_back(r);
     }
     return list;
@@ -93,11 +91,11 @@ Reservation ReservationTransaction :: getReservation(int id){
   while(qr.next()){
       int id = qr.value(0).toInt();
       QString Start = qr.value(1).toString();
-      QString End = qr.value(2).toString();
-      int id_client = qr.value(3).toInt();
+      int id_client = qr.value(2).toInt();
+      int returned = qr.value(3).toInt();
       int id_book = qr.value(4).toInt();
 
-      r = new Reservation(id,Start,End,id_client,id_book);
+      r = new Reservation(id,Start,id_client,id_book,returned);
   }
   return *r;
 }
