@@ -11,7 +11,7 @@ public:
     void addReservation(Reservation);
     void deleteReservation(int);
     void updateReservation(int ,Reservation);
-    QVector<Reservation> getReservations();
+    QVector<Reservation> getReservations(int returned,QString clientName, QString bookName);
     Reservation getReservation(int);
 
 };

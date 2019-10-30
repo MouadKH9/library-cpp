@@ -51,13 +51,12 @@ void LivreTransaction ::updateLivre(int id, Livre l){
       }
 }
 
-QVector<Livre> LivreTransaction ::getLivres(){
+QVector<Livre> LivreTransaction ::getLivres(QString bookName){
 
    connection();
    QVector <Livre> list;
     QSqlQuery qr;
-    qr.prepare("SELECT * FROM Book");
-
+    qr.prepare("SELECT * FROM Book WHERE Name LIKE '%" + bookName + "%'");
     if(!qr.exec()){
           qDebug()<<"error in displaying values";
     }

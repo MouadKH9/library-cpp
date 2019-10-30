@@ -5,8 +5,6 @@
 #include "clienttransaction.h"
 int main(int argc, char *argv[])
 {
-    ClientTransaction ct;
-    ct.getClients();
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

@@ -12,7 +12,7 @@ public:
    void deleteClient(int );
    void updateClient(int ,Client);
    void blockClient(int);
-   QVector<Client> getClients();
+   QVector<Client> getClients(QString);
    Client getClient(int);
    bool clientExists(int);
 

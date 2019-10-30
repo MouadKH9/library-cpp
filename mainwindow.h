@@ -56,6 +56,18 @@ private slots:
 
     void on_bookID_textChanged(const QString &arg1);
 
+    void on_pushButton_3_clicked();
+
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_lineEdit_3_textChanged(const QString &arg1);
+
+    void on_lineEdit_4_textChanged(const QString &arg1);
+
+    void on_lineEdit_5_textChanged(const QString &arg1);
+
+    void on_lineEdit_6_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *clientModel;

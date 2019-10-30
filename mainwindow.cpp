@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->comboBox->addItem("All");
+    ui->comboBox->addItem("Non retourne");
+    ui->comboBox->addItem("Retourne");
     setUpClientsTable();
     setUpLivresTable();
     setUpReservationsTable();
@@ -28,9 +31,11 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::setUpClientsTable(){
+    QString clientName = ui->lineEdit_5->text().length() > 0 ? ui->lineEdit_5->text() : "%";
+
 
     ClientTransaction ct;
-    QVector<Client> clients = ct.getClients();
+    QVector<Client> clients = ct.getClients(clientName);
     Client tmp;
 
     clientModel = new QStandardItemModel(clients.length(),4,this);
@@ -115,9 +120,11 @@ void MainWindow::blockClients(){
 }
 
 void MainWindow::setUpLivresTable(){
+    QString bookName = ui->lineEdit_6->text().length() > 0 ? ui->lineEdit_6->text() : "%";
+
 
     LivreTransaction lt;
-    QVector<Livre> livres = lt.getLivres();
+    QVector<Livre> livres = lt.getLivres(bookName);
     Livre tmp;
 
 
@@ -189,10 +196,14 @@ void MainWindow::deleteLivres(){
 }
 
 void MainWindow::setUpReservationsTable(){
-    ReservationTransaction rt;
-    QVector<Reservation> reservations = rt.getReservations();
-    Reservation tmp;
 
+    int returned = ui->comboBox->currentIndex() - 1;
+    QString clientName = ui->lineEdit_3->text().length() > 0 ? ui->lineEdit_3->text() : "%";
+    QString bookName = ui->lineEdit_4->text().length() > 0 ? ui->lineEdit_4->text() : "%";
+    qDebug() << "Filter: " << returned << " " << clientName << " " << bookName;
+    ReservationTransaction rt;
+    QVector<Reservation> reservations = rt.getReservations(returned, clientName, bookName);
+    Reservation tmp;
     reservationModel = new QStandardItemModel(reservations.length(),5,this);
     ui->reservationsTable->setModel(reservationModel);
     ui->reservationsTable->verticalHeader()->hide();
@@ -413,4 +424,34 @@ void MainWindow::on_clientID_textChanged(const QString &arg1)
 void MainWindow::on_bookID_textChanged(const QString &arg1)
 {
     ui->pushButton->setEnabled(ui->bookID->text().length() > 0 && ui->clientID->text().length() > 0);
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    setUpReservationsTable();
+}
+
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    setUpReservationsTable();
+}
+
+void MainWindow::on_lineEdit_3_textChanged(const QString &arg1)
+{
+    setUpReservationsTable();
+}
+
+void MainWindow::on_lineEdit_4_textChanged(const QString &arg1)
+{
+    setUpReservationsTable();
+}
+
+void MainWindow::on_lineEdit_5_textChanged(const QString &arg1)
+{
+    setUpClientsTable();
+}
+
+void MainWindow::on_lineEdit_6_textChanged(const QString &arg1)
+{
+    setUpLivresTable();
 }

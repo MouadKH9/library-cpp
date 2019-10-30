@@ -67,12 +67,12 @@ void ClientTransaction ::blockClient(int id){
 
 }
 
-QVector<Client> ClientTransaction ::getClients(){
+QVector<Client> ClientTransaction ::getClients(QString clientName){
 
     QVector <Client> list ;
    connection();
     QSqlQuery qr;
-    qr.prepare("SELECT * FROM Client");
+    qr.prepare("SELECT * FROM Client WHERE First || ' ' || Last LIKE '%" + clientName + "%'");
 
     if(!qr.exec()){
           qDebug()<<"error in displaying values";

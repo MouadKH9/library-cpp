@@ -56,17 +56,20 @@ void ReservationTransaction ::updateReservation(int id, Reservation r) {
         if(! qr.exec())
             qDebug()<<"error in edding values";
         else
-            qDebug() << "Udated #"<< id<< " " << r.getIdLivre();
+            qDebug() << "Updated #"<< id<< " " << r.getIdLivre();
 }
 
 
-QVector<Reservation> ReservationTransaction ::getReservations(){
+QVector<Reservation> ReservationTransaction ::getReservations(int returned,QString clientName, QString bookName){
    connection();
    QVector<Reservation> list;
     QSqlQuery qr;
-    qr.prepare("SELECT * FROM Reservation");
+    QString returnedCondition = "";
+    if(returned >= 0) returnedCondition = " AND r.returned = " + QString::fromStdString(to_string(returned));
+    QString QUERY = "SELECT * FROM Reservation r, Client c, Book l WHERE l.Name LIKE '%" + bookName + "%' AND c.First || ' ' || c.Last LIKE '%" + clientName + "%' AND c.id = r.Id_client AND l.id = r.Id_book " + returnedCondition;
+    qr.prepare(QUERY);
     if(!qr.exec()){
-          qDebug()<<"error in displaying values";
+          qDebug()<< QUERY;
     }
     while(qr.next()){
         int id = qr.value(0).toInt();

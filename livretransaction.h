@@ -11,7 +11,7 @@ public:
     void addLivre(Livre);
     void deleteLivre(int);
     void updateLivre(int ,Livre);
-    QVector<Livre> getLivres();
+    QVector<Livre> getLivres(QString);
     Livre getLivre(int);
     bool livreExists(int);
 };
