@@ -33,7 +33,11 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="3" column="0">
-             <widget class="QTableView" name="reservationsTable"/>
+             <widget class="QTableView" name="reservationsTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+             </widget>
             </item>
             <item row="0" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout">
@@ -281,7 +285,11 @@
              </layout>
             </item>
             <item row="3" column="0">
-             <widget class="QTableView" name="clientsTable"/>
+             <widget class="QTableView" name="clientsTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -290,6 +298,31 @@
             <string>Livres</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_4">
+            <item row="2" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Filtres:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_6">
+                <property name="placeholderText">
+                 <string>Nom du livre</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="3" column="0">
+             <widget class="QTableView" name="livresTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_7">
               <item>
@@ -362,25 +395,11 @@
              </layout>
             </item>
             <item row="1" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <item>
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Filtres:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_6">
-                <property name="placeholderText">
-                 <string>Nom du livre</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="2" column="0">
-             <widget class="QTableView" name="livresTable"/>
+             <widget class="Line" name="line_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

@@ -75,8 +75,14 @@ void MainWindow::deleteClients(){
         return;
     }
 
-    ClientTransaction ct;
     QModelIndexList ids = select->selection().indexes();
+    QMessageBox::StandardButton reply;
+      reply = QMessageBox::question(this, "Confirmation", "Êtes-vous sûr de vouloir supprimer ces client(s)?",
+                                    QMessageBox::Yes|QMessageBox::No);
+      if (reply == QMessageBox::No)
+        return;
+
+    ClientTransaction ct;
     bool skipMe = false;
     for(int i = 0;i < ids.length();i++){
         for(int j=0;j<i;j++)
@@ -89,6 +95,7 @@ void MainWindow::deleteClients(){
             ct.deleteClient(ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt());
         }
    }
+    setUpClientsTable();
 
 }
 
@@ -178,6 +185,13 @@ void MainWindow::deleteLivres(){
 
     LivreTransaction lt;
     QModelIndexList ids = select->selectedIndexes();
+
+    QMessageBox::StandardButton reply;
+      reply = QMessageBox::question(this, "Confirmation", "Êtes-vous sûr de vouloir supprimer ces livre(s)?",
+                                    QMessageBox::Yes|QMessageBox::No);
+      if (reply == QMessageBox::No)
+        return;
+
     qDebug() << "size: " << ids.length();
     bool skipMe = false;
     for(int i = 0;i < ids.length();i++){
@@ -249,7 +263,13 @@ void MainWindow::deleteReservation(){
 
     ReservationTransaction rt;
     QModelIndexList ids = select->selectedIndexes();
-    qDebug() << "size: " << ids.length();
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Confirmation", "Êtes-vous sûr de vouloir supprimer ces reservation(s)?",
+                            QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::No)
+        return;
+
     bool skipMe = false;
     for(int i = 0;i < ids.length();i++){
         for(int j=0;j<i;j++)
