@@ -3,7 +3,7 @@
 #include <string>
 #include <QMessageBox>
 #include<ctime>
-
+#include"DB.h"
 #include "admin.h"
 #include "admintransaction.h"
 #include "client.h"
@@ -15,9 +15,14 @@
 using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+    , ui(new Ui::MainWindow){
     ui->setupUi(this);
+    QPixmap bkgnd("C:/Users/lg/Desktop/bg.jpg");
+    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Background, bkgnd);
+    this->setPalette(palette);
+
     ui->comboBox->addItem("All");
     ui->comboBox->addItem("Non retourne");
     ui->comboBox->addItem("Retourne");
@@ -122,8 +127,10 @@ void MainWindow::blockClients(){
     QModelIndexList ids = select->selection().indexes();
     for(int i = 0;i < ids.length();i++){
         qDebug() << "Blocking: " <<  ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt();
-        ct.blockClient(ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt());
+        ct.toggleBlockClient(ui->clientsTable->model()->data(clientModel->index(ids.at(i).row(),0)).toInt());
     }
+
+    setUpClientsTable();
 }
 
 void MainWindow::setUpLivresTable(){
@@ -353,9 +360,9 @@ void MainWindow::on_pushButton_5_clicked(){
     QString password = ui->lineEdit_2->text().toUtf8();
     Admin admin(username,password);
     AdminTransaction at;
-    if(at.Login(admin))
+    if(at.Login(admin)){
         ui->stackedWidget->setCurrentIndex(0);
-    else{
+    }else{
         QMessageBox *msgBox = new QMessageBox(this);
         msgBox->warning(this,"Erreur","Les informations d'identification sont invalides.");
 

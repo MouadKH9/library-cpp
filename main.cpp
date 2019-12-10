@@ -1,11 +1,15 @@
 #include "mainwindow.h"
 
 #include <QApplication>
-#include "client.h"
-#include "clienttransaction.h"
+#include "admin.h"
+#include"DB.h"
+#include "admintransaction.h"
 int main(int argc, char *argv[])
 {
+
     QApplication a(argc, argv);
+    DB db("C:/Users/lg/Desktop/db.sqlite");
+    db.connect();
     MainWindow w;
     w.show();
     return a.exec();

@@ -4,20 +4,8 @@
 #include <QVector>
 using namespace std;
 
-void ClientTransaction::connection(){
-    QSqlDatabase mydb = QSqlDatabase::addDatabase("QSQLITE");
-    mydb.setDatabaseName("C:/Users/lg/Desktop/db.sqlite");
-    if(!mydb.open()){
-        qDebug()<<"we have a prob";
-    }
-    else{
-        qDebug()<<"we don't have a prob";
-    }
-}
-
 
 void ClientTransaction ::addClient(Client c){
-    connection();
     QSqlQuery qr1 ;
     qr1.prepare("INSERT INTO Client ("
                "First,"
@@ -30,47 +18,40 @@ void ClientTransaction ::addClient(Client c){
     qr1.addBindValue(c.getNom());
     qr1.addBindValue(c.getEtat());
 
-    if(! qr1.exec()){
-        qDebug()<<"error in adding values";
-        qDebug()<<"ERROR! "<< qr1.lastError();
-    }else
-        qDebug() << "added client " << c.getPrenom() << " " << c.getNom();
+    if(! qr1.exec())
+        qDebug()<<"Error adding new client: " << qr1.lastError();
+    else
+        qDebug() << "Added client " << c.getPrenom() << " " << c.getNom();
 }
 
 void ClientTransaction ::deleteClient(int id) {
-    connection();
-        QSqlQuery qr ;
-        qr.prepare("DELETE FROM Client WHERE Id="+QString::number(id));
-        if(! qr.exec()){
-            qDebug()<<"error in deleting values";
-        }
+    QSqlQuery qr ;
+    qr.prepare("DELETE FROM Client WHERE Id="+QString::number(id));
+    if(! qr.exec())
+        qDebug()<<"Error deleting client: " << qr.lastError();
 
 }
 void ClientTransaction ::updateClient(int id, Client c) {
-    connection();
       QSqlQuery qr ;
       qr.prepare("UPDATE Client SET First=?, Last =? , Stat=? WHERE Id="+QString::number(id));
       qr.addBindValue(c.getPrenom());
       qr.addBindValue(c.getNom());
       qr.addBindValue(c.getEtat());
-      if(! qr.exec()){
-          qDebug()<<"error in edding values";
-      }
+      if(! qr.exec())
+          qDebug()<<"Error updating client: "<< qr.lastError();
 }
-void ClientTransaction ::blockClient(int id){
-    connection();
+void ClientTransaction ::toggleBlockClient(int id){
       QSqlQuery qr ;
-      qr.prepare("UPDATE Client SET Stat=1 WHERE Id="+QString::number(id));
-      if(! qr.exec()){
-          qDebug()<<"error in blocking client";
-      }
+      Client c = getClient(id);
+      qr.prepare("UPDATE Client SET Stat=" + QString::number(c.getEtat() == 0 ? 1 : 0) + " WHERE Id="+QString::number(id));
+      if(! qr.exec())
+          qDebug()<<"Error in blocking client: " << qr.lastError();
 
 }
 
 QVector<Client> ClientTransaction ::getClients(QString clientName){
 
     QVector <Client> list ;
-   connection();
     QSqlQuery qr;
     qr.prepare("SELECT * FROM Client WHERE First || ' ' || Last LIKE '%" + clientName + "%'");
 
@@ -89,7 +70,6 @@ QVector<Client> ClientTransaction ::getClients(QString clientName){
 
 }
 Client ClientTransaction :: getClient(int id){
-  connection();
   Client *c = NULL ;
   QSqlQuery qr;
   qr.prepare("SELECT * FROM Client WHERE Id="+QString::number(id));
@@ -110,7 +90,6 @@ Client ClientTransaction :: getClient(int id){
 }
 
 bool ClientTransaction::clientExists(int id){
-    connection();
     QSqlQuery qr;
     qr.prepare("SELECT * FROM Client WHERE Id="+QString::number(id));
     if(!qr.exec()){

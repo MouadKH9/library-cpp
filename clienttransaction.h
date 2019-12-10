@@ -11,7 +11,7 @@ public:
    void addClient(Client);
    void deleteClient(int );
    void updateClient(int ,Client);
-   void blockClient(int);
+   void toggleBlockClient(int);
    QVector<Client> getClients(QString);
    Client getClient(int);
    bool clientExists(int);

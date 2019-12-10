@@ -3,19 +3,7 @@
 #include<QDebug>
 
 
-void ReservationTransaction::connection(){
-    QSqlDatabase mydb = QSqlDatabase::addDatabase("QSQLITE");
-    mydb.setDatabaseName("C:/Users/lg/Desktop/db.sqlite");
-    if(!mydb.open()){
-        qDebug()<<"we have a prob";
-    }
-    else{
-        qDebug()<<"we don't have a prob";
-    }
-}
-
 void ReservationTransaction ::addReservation(Reservation r){
-    connection();
     QSqlQuery qr1 ;
     qr1.prepare("INSERT INTO Reservation ("
                "Start,"
@@ -37,31 +25,28 @@ void ReservationTransaction ::addReservation(Reservation r){
 }
 
 void ReservationTransaction ::deleteReservation(int id) {
-    connection();
-        QSqlQuery qr ;
-        qr.prepare("DELETE FROM Reservation WHERE Id="+QString::number(id));
-        if(! qr.exec()){
-            qDebug()<<"error in deleting values";
-        }
+    QSqlQuery qr ;
+    qr.prepare("DELETE FROM Reservation WHERE Id="+QString::number(id));
+    if(! qr.exec()){
+        qDebug()<<"error in deleting values";
+    }
 
 }
 void ReservationTransaction ::updateReservation(int id, Reservation r) {
-        connection();
-        QSqlQuery qr ;
-        qr.prepare("UPDATE Reservation SET Start=? , Id_client =? , Id_book=? , returned=? WHERE Id="+QString::number(id));
-        qr.addBindValue(r.getDebut());
-        qr.addBindValue(r.getIdClient());
-        qr.addBindValue(r.getIdLivre());
-        qr.addBindValue(r.getReturned());
-        if(! qr.exec())
-            qDebug()<<"error in edding values";
-        else
-            qDebug() << "Updated #"<< id<< " " << r.getIdLivre();
+    QSqlQuery qr ;
+    qr.prepare("UPDATE Reservation SET Start=? , Id_client =? , Id_book=? , returned=? WHERE Id="+QString::number(id));
+    qr.addBindValue(r.getDebut());
+    qr.addBindValue(r.getIdClient());
+    qr.addBindValue(r.getIdLivre());
+    qr.addBindValue(r.getReturned());
+    if(! qr.exec())
+        qDebug()<<"error in edding values";
+    else
+        qDebug() << "Updated #"<< id<< " " << r.getIdLivre();
 }
 
 
 QVector<Reservation> ReservationTransaction ::getReservations(int returned,QString clientName, QString bookName){
-   connection();
    QVector<Reservation> list;
     QSqlQuery qr;
     QString returnedCondition = "";
@@ -84,7 +69,6 @@ QVector<Reservation> ReservationTransaction ::getReservations(int returned,QStri
 
 }
 Reservation ReservationTransaction :: getReservation(int id){
-  connection();
   Reservation *r = NULL;
   QSqlQuery qr;
   qr.prepare("SELECT * FROM Reservation WHERE Id="+QString::number(id));

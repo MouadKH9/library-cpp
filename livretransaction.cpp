@@ -2,19 +2,7 @@
 #include <QtSql>
 #include<QDebug>
 
-void LivreTransaction::connection(){
-    QSqlDatabase mydb = QSqlDatabase::addDatabase("QSQLITE");
-    mydb.setDatabaseName("C:/Users/lg/Desktop/db.sqlite");
-    if(!mydb.open()){
-        qDebug()<<"we have a prob";
-    }
-    else{
-        qDebug()<<"we don't have a prob";
-    }
-}
-
 void LivreTransaction ::addLivre(Livre l){
-  connection();
     QSqlQuery qr ;
     qr.prepare("INSERT INTO Book ("
                "Name,"
@@ -32,7 +20,6 @@ void LivreTransaction ::addLivre(Livre l){
 
 }
 void LivreTransaction ::deleteLivre(int id){
-    connection();
         QSqlQuery qr ;
         qr.prepare("DELETE FROM Book WHERE Id="+QString::number(id));
         if(! qr.exec()){
@@ -41,7 +28,6 @@ void LivreTransaction ::deleteLivre(int id){
 
 }
 void LivreTransaction ::updateLivre(int id, Livre l){
-    connection();
       QSqlQuery qr ;
       qr.prepare("UPDATE Book SET Name=?, Authur =? WHERE Id="+QString::number(id));
       qr.addBindValue(l.getNom());
@@ -52,8 +38,6 @@ void LivreTransaction ::updateLivre(int id, Livre l){
 }
 
 QVector<Livre> LivreTransaction ::getLivres(QString bookName){
-
-   connection();
    QVector <Livre> list;
     QSqlQuery qr;
     qr.prepare("SELECT * FROM Book WHERE Name LIKE '%" + bookName + "%'");
@@ -72,7 +56,6 @@ QVector<Livre> LivreTransaction ::getLivres(QString bookName){
 
 }
 Livre LivreTransaction :: getLivre(int id){
-  connection();
   Livre *l=NULL;
   QSqlQuery qr;
   qr.prepare("SELECT * FROM Book WHERE Id="+QString::number(id));
@@ -90,7 +73,6 @@ Livre LivreTransaction :: getLivre(int id){
 }
 
 bool LivreTransaction::livreExists(int id){
-    connection();
     QSqlQuery qr;
     qr.prepare("SELECT * FROM Book WHERE Id="+QString::number(id));
     if(!qr.exec()){
